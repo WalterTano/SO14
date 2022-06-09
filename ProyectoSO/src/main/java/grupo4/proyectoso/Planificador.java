@@ -6,7 +6,6 @@ package grupo4.proyectoso;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -19,7 +18,7 @@ public class Planificador {
     private short cantProcesadoresLibres;
     private double quantum;
     private long ultimoPID;
-    LinkedHashMap<Long, Proceso>[] multiNivelListos;
+    ColaMultiNivel<Long, Proceso> multiNivelListos;
     HashMap<Long, Proceso> procesosBloqueadosPorPID;
     HashMap<Long, Proceso> procesosEnEjecucionPorPID;
 
@@ -27,7 +26,7 @@ public class Planificador {
         this.cantProcesadoresTotal = cantProcesadoresTotal;
         this.cantProcesadoresLibres = cantProcesadoresTotal;
         this.quantum = quantum;
-        this.multiNivelListos = new LinkedHashMap[Proceso.PRIORIDAD_MINIMA + 1];
+        this.multiNivelListos = new ColaMultiNivel<Long, Proceso>(Proceso.PRIORIDAD_MINIMA);
         this.procesosBloqueadosPorPID = new HashMap<Long, Proceso>();
         this.procesosEnEjecucionPorPID = new HashMap<Long, Proceso>();
     }
@@ -39,12 +38,10 @@ public class Planificador {
             return true;
         }
 
-        for (LinkedHashMap<Long, Proceso> colaPrioridad : this.multiNivelListos) {
-            if (colaPrioridad.containsKey(pID)) {
-                this.procesosBloqueadosPorPID.put(pID, 
-                        colaPrioridad.remove(pID));
-                return true;
-            }
+        Proceso proc = this.multiNivelListos.remover(pID);
+        if (proc != null) {
+            this.procesosBloqueadosPorPID.put(pID, proc);
+            return true;
         }
 
         return false;
@@ -53,7 +50,7 @@ public class Planificador {
     public boolean desbloquearProceso(Long pID) {
         if (this.procesosBloqueadosPorPID.containsKey(pID)) {
             Proceso proc = this.procesosBloqueadosPorPID.remove(pID);
-            this.multiNivelListos[proc.getPrioridad()].put(pID, proc);
+            this.multiNivelListos.agregar(pID, proc, proc.getPrioridad());
             return true;
         }
         
@@ -65,8 +62,7 @@ public class Planificador {
         short prioridad = (short) ThreadLocalRandom.current().nextInt(Proceso.PRIORIDAD_MAXIMA, Proceso.PRIORIDAD_MINIMA + 1);
 
         Proceso nuevoProc = new Proceso(++this.ultimoPID, tiempoEnCPU, periodoES, esperaES, prioridad);
-        
-        return this.multiNivelListos[prioridad].put(nuevoProc.getpID(), nuevoProc) != null;
+        return this.multiNivelListos.agregar(nuevoProc.getpID(), nuevoProc, prioridad) != null;
     }
     
     public boolean insertarProcesos(Collection<Proceso> procesos) {
@@ -91,8 +87,8 @@ public class Planificador {
         return quantum;
     }
 
-    public LinkedHashMap<Long, Proceso>[] getMultiNivelListos() {
-        return multiNivelListos;
+    public ColaMultiNivel<Long, Proceso> getMultiNivelListos() {
+        return this.multiNivelListos;
     }
 
     public HashMap<Long, Proceso> getProcesosBloqueadosPorPID() {

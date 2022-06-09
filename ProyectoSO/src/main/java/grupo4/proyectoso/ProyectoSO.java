@@ -12,9 +12,6 @@ package grupo4.proyectoso;
 public class ProyectoSO {
 
     public static void main(String[] args) {
-        int coso = 0;
-        System.out.println(coso++);
-        System.out.println(coso);
-        System.out.println(++coso);
+        // TODO code application logic here
     }
 }
