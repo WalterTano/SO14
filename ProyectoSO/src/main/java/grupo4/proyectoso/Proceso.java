@@ -15,7 +15,7 @@ public class Proceso {
 
     
     private long pID;
-    private int edad;
+    private short edad;
     private Planificador planificador;
     private double tiempoTotalEnCPU;
     private double periodoES;
@@ -41,9 +41,14 @@ public class Proceso {
         this.esperaESRestante = esperaES;
         this.estado = Estado.LISTO;
     }
-    
-    public Proceso(int pID) {
-        this.pID = pID;
+
+    public Proceso(double tiempoTotalEnCPU, double periodoES, double esperaES) {
+        this.tiempoTotalEnCPU = tiempoTotalEnCPU;
+        this.periodoES = periodoES;
+        this.esperaES = esperaES;
+        this.edad = 0;
+        this.esperaESRestante = esperaES;
+        this.estado = Estado.LISTO;
     }
     
     @Override
@@ -55,7 +60,7 @@ public class Proceso {
         return this.pID;
     }
 
-    public int getEdad() {
+    public short getEdad() {
         return edad;
     }
 
@@ -83,7 +88,7 @@ public class Proceso {
         return estado;
     }
 
-    public void setEdad(int edad) {
+    public void setEdad(short edad) {
         this.edad = edad;
     }
 
