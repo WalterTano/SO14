@@ -5,10 +5,7 @@
 package grupo4.proyectoso;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -16,67 +13,93 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author TanoW
  */
 public class Planificador {
-       
+
     private short cantProcesadoresTotal;
     private short cantProcesadoresLibres;
     private double quantum;
     private long ultimoPID;
-    Map<Integer, Proceso>[] multiNivelListos;
-    Map<Integer, Proceso> procesosBloqueadosPorPID;
-    Map<Integer, Proceso> procesosEnEjecucionPorPID;
+    ColaMultiNivel<Long, Proceso> multiNivelListos;
+    HashMap<Long, Proceso> procesosBloqueadosPorPID;
+    HashMap<Long, Proceso> procesosEnEjecucionPorPID;
 
-    public Planificador(short cantProcesadoresTotal, double quantum) {
-        this.cantProcesadoresTotal = cantProcesadoresTotal;
-        this.cantProcesadoresLibres = cantProcesadoresTotal;
+    public Planificador(short pID, double quantum) {
+        this.cantProcesadoresTotal = pID;
+        this.cantProcesadoresLibres = pID;
         this.quantum = quantum;
-        this.multiNivelListos = new LinkedHashMap[Proceso.PRIORIDAD_MINIMA + 1];
-        this.procesosBloqueadosPorPID = new HashMap<Integer, Proceso>();
-        this.procesosEnEjecucionPorPID = new HashMap<Integer, Proceso>();
+        this.multiNivelListos = new ColaMultiNivel<Long, Proceso>(Proceso.PRIORIDAD_MINIMA);
+        this.procesosBloqueadosPorPID = new HashMap<Long, Proceso>();
+        this.procesosEnEjecucionPorPID = new HashMap<Long, Proceso>();
     }
-    
-    public boolean bloquearProceso(int pID) {
+
+    public boolean bloquearProceso(Long pID) {
         if (this.procesosEnEjecucionPorPID.containsKey(pID)) {
             this.procesosBloqueadosPorPID.put(pID, 
                     this.procesosEnEjecucionPorPID.remove(pID));
             return true;
         }
-        
-        Proceso proc = new Proceso(pID);
-        // TODO: REVISAR CON LINKEDHASHMAP
-        for (LinkedList<Proceso> colaPrioridad : this.multiNivelListos) {
-            int indice = colaPrioridad.indexOf(proc);
-            if (indice != -1) {
-                this.procesosBloqueadosPorPID.put(pID, colaPrioridad.get(indice));
-                return colaPrioridad.remove(proc);
-            }
+
+        Proceso proc = this.multiNivelListos.remover(pID);
+        if (proc != null) {
+            this.procesosBloqueadosPorPID.put(pID, proc);
+            return true;
         }
+
+        return false;
+    }
+
+    public boolean bloquearProceso(Proceso proc) {
+        if (this.procesosEnEjecucionPorPID.containsKey(proc.getPID())) {
+            this.procesosBloqueadosPorPID.put(proc.getPID(), 
+                    this.procesosEnEjecucionPorPID.remove(proc.getPID()));
+            return true;
+        }
+
+        Proceso procResult = this.multiNivelListos.remover(proc.getPID(), proc.getPrioridad());
+        if (procResult != null) {
+            this.procesosBloqueadosPorPID.put(procResult.getPID(), proc);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean desbloquearProceso(Long pID) {
+        if (this.procesosBloqueadosPorPID.containsKey(pID)) {
+            Proceso proc = this.procesosBloqueadosPorPID.remove(pID);
+            this.multiNivelListos.agregar(pID, proc, proc.getPrioridad());
+            return true;
+        }
+        
         return false;
     }
     
-    public boolean desbloquearProceso(int pID) {
-        Proceso proc = this.procesosBloqueadosPorPID.remove(pID);
-        LinkedList<Proceso> cola = this.multiNivelListos[proc.getPrioridad()];
-        cola.add(proc);
-        return false;
+    public boolean insertarProceso(double tiempoEnCPU, double periodoES, double esperaES, short prioridad, Proceso.Tipo tipo) {
+        Proceso nuevoProc = new Proceso(++this.ultimoPID, tiempoEnCPU, periodoES, esperaES, prioridad, tipo, this);
+        return this.multiNivelListos.agregar(nuevoProc.getPID(), nuevoProc, prioridad) != null;
     }
-    
-    public boolean insertarProceso(double tiempoEnCPU, double periodoES, double esperaES) {
-        this.ultimoPID++;
-        // TODO: Asignar prioridad bien y no random.
-        short prioridad = (short) ThreadLocalRandom.current()
-                .nextInt(Proceso.PRIORIDAD_MAXIMA, Proceso.PRIORIDAD_MINIMA + 1);
-        Proceso nuevoProc = new Proceso(this.ultimoPID, tiempoEnCPU, periodoES, esperaES, prioridad);
-        return this.multiNivelListos[prioridad].add(nuevoProc);
+
+    public boolean insertarProceso(Proceso proceso) {
+        proceso.setPID(++this.ultimoPID);
+        return this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad()) != null;
     }
     
     public boolean insertarProcesos(Collection<Proceso> procesos) {
         for (Proceso proc : procesos) {
-            if (!this.insertarProceso(proc.getTiempoTotalEnCPU(), 
-                    proc.getPeriodoES(), proc.getEsperaES())) {
+            if (!this.insertarProceso(proc)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean setPrioridadProceso(Proceso proc, short prioridad) {
+        Proceso proceso = this.multiNivelListos.remover(proc.getPID(), proc.getPrioridad());
+        if (proceso != null) {
+            proceso.setPrioridad(prioridad);
+            return this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad()) != null;
+        }
+
+        return false;
     }
 
     public short getCantProcesadoresTotal() {
@@ -91,15 +114,15 @@ public class Planificador {
         return quantum;
     }
 
-    public LinkedList<Proceso>[] getMultiNivelListos() {
-        return multiNivelListos;
+    public ColaMultiNivel<Long, Proceso> getMultiNivelListos() {
+        return this.multiNivelListos;
     }
 
-    public Map<Integer, Proceso> getProcesosBloqueadosPorPID() {
+    public HashMap<Long, Proceso> getProcesosBloqueadosPorPID() {
         return procesosBloqueadosPorPID;
     }
 
-    public Map<Integer, Proceso> getProcesosEnEjecucionPorPID() {
+    public HashMap<Long, Proceso> getProcesosEnEjecucionPorPID() {
         return procesosEnEjecucionPorPID;
     }
 
