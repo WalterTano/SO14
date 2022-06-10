@@ -6,10 +6,18 @@ public class ColaMultiNivel<K, V> {
 
     private LinkedHashMap<K, V>[] colaMultiNivel;
     private int ultimoNivel;
+    private boolean esVacia;
 
     public ColaMultiNivel(int cantNiveles) {
         this.colaMultiNivel = new LinkedHashMap[cantNiveles + 1];
+        for (int i = 0; i <= cantNiveles; i++) {
+            this.colaMultiNivel[i] = new LinkedHashMap<K, V>();
+        }
         this.ultimoNivel = 0;
+    }
+
+    private boolean nivelValido(int nivel) {
+        return nivel < this.colaMultiNivel.length && nivel >= 0;
     }
 
     public V agregar(K clave, V value, int nivel) {
@@ -20,15 +28,12 @@ public class ColaMultiNivel<K, V> {
         throw new IllegalArgumentException("Nivel inválido, debe ser mayor o igual a 0 y menor a " + this.colaMultiNivel.length);
     }
 
-    private boolean nivelValido(int nivel) {
-        return nivel < this.colaMultiNivel.length && nivel >= 0;
-    }
-
     public V remover(K clave, int nivel) {
         if (this.nivelValido(nivel)) {
             return this.colaMultiNivel[nivel].remove(clave);
         }
-        throw new IllegalArgumentException("Nivel inválido, debe ser mayor o igual a 0 y menor a " + this.colaMultiNivel.length);
+
+        return null;
     }
 
     public V remover(K clave) {
@@ -44,7 +49,8 @@ public class ColaMultiNivel<K, V> {
         if (this.nivelValido(nivel)) {
             return this.colaMultiNivel[nivel].get(clave);
         }
-        throw new IllegalArgumentException("Nivel inválido, debe ser mayor o igual a 0 y menor a " + this.colaMultiNivel.length);
+
+        return null;
     }
 
     public V obtener(K clave) {
@@ -58,14 +64,23 @@ public class ColaMultiNivel<K, V> {
     }
 
     public V siguiente() {
+        if (this.esVacia()) {
+            return null;
+        }
+
         for (;this.ultimoNivel < this.colaMultiNivel.length; this.ultimoNivel++) {
             if (!this.colaMultiNivel[this.ultimoNivel].isEmpty()) {
-                K clave = this.colaMultiNivel[this.ultimoNivel].entrySet().iterator().next().getKey();
+                K clave = this.colaMultiNivel[this.ultimoNivel].keySet().iterator().next();
                 return this.colaMultiNivel[this.ultimoNivel].remove(clave);
             }
         }
 
         this.ultimoNivel = 0;
+        this.esVacia = true;
         return null;
+    }
+
+    public boolean esVacia() {
+        return this.esVacia;
     }
 }

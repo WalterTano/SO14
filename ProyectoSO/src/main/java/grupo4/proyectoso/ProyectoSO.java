@@ -11,7 +11,19 @@ package grupo4.proyectoso;
  */
 public class ProyectoSO {
 
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static void main(String[] args) throws InterruptedException {
+        double tiempoTotalEnCPU = 30000.0;
+        double periodoES = 30000.0;
+        double esperaES = 30000.0;
+        short prioridad = 50;
+        short poronga = 4;
+        Planificador planif = new Planificador(poronga, 500.0);
+        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        Thread.sleep(500);
+        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        Thread.sleep(500);
+        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        Thread.sleep(500);
+        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
     }
 }
