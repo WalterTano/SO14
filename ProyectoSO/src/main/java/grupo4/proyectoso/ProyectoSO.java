@@ -5,10 +5,7 @@
 
 package grupo4.proyectoso;
 
-/**
- *
- * @author TanoW
- */
+
 public class ProyectoSO {
 
     public static void main(String[] args) throws InterruptedException {

@@ -4,29 +4,27 @@
  */
 package grupo4.proyectoso;
 
-/**
- *
- * @author TanoW
- */
 public class Proceso {
-    
+
     public static final int PRIORIDAD_MINIMA = 99;
     public static final int PRIORIDAD_MAXIMA = 0;
     public static final int PRIORIDAD_SO = 15;
-    public static final int EDAD_ENVEJECIMIENTO = 5;
-    public static final int ESPERA_ENVEJECIMIENTO = 1000;
-    
+    public static final int EDAD_ENVEJECIMIENTO = 50;
+
     private long pID;
     private short edad;
     private Planificador planificador;
     private double tiempoTotalEnCPU;
+    private double tiempoRestanteEnCPU;
     private double periodoES;
+    private double periodoESRestante;
     private double esperaES;
     private double esperaESRestante;
     private short prioridad;
     private Estado estado;
     private Tipo tipo;
-    
+    private TimerProceso timer;
+
     public enum Estado {
         LISTO,
         EN_EJECUCION,
@@ -42,7 +40,9 @@ public class Proceso {
     public Proceso(long pID, double tiempoTotalEnCPU, double periodoES, double esperaES, short prioridad, Tipo tipo, Planificador planif) {
         this.pID = pID;
         this.tiempoTotalEnCPU = tiempoTotalEnCPU;
+        this.tiempoRestanteEnCPU = tiempoTotalEnCPU;
         this.periodoES = periodoES;
+        this.periodoESRestante = periodoES;
         this.esperaES = esperaES;
         this.esperaESRestante = esperaES;
         this.prioridad = prioridad;
@@ -50,12 +50,13 @@ public class Proceso {
         this.edad = 0;
         this.estado = Estado.LISTO;
         this.planificador = planif;
-        this.iniciarEnvejecimiento();
     }
 
     public Proceso(double tiempoTotalEnCPU, double periodoES, double esperaES, short prioridad, Tipo tipo, Planificador planif) {
         this.tiempoTotalEnCPU = tiempoTotalEnCPU;
+        this.tiempoRestanteEnCPU = tiempoTotalEnCPU;
         this.periodoES = periodoES;
+        this.periodoESRestante = periodoES;
         this.esperaES = esperaES;
         this.esperaESRestante = esperaES;
         this.prioridad = prioridad;
@@ -63,9 +64,8 @@ public class Proceso {
         this.edad = 0;
         this.estado = Estado.LISTO;
         this.planificador = planif;
-        this.iniciarEnvejecimiento();
     }
-    
+
     @Override
     public boolean equals(Object proc) {
         return this.pID == ((Proceso) proc).getPID();
@@ -83,8 +83,16 @@ public class Proceso {
         return tiempoTotalEnCPU;
     }
 
+    public double getTiempoRestanteEnCPU() {
+        return tiempoRestanteEnCPU;
+    }
+
     public double getPeriodoES() {
         return periodoES;
+    }
+
+    public double getPeriodoESRestante() {
+        return periodoESRestante;
     }
 
     public double getEsperaES() {
@@ -107,12 +115,16 @@ public class Proceso {
         this.pID = pID;
     }
 
-    public void setEdad(short edad) {
-        this.edad = edad;
+    public void incrementarEdad() {
+        this.edad++;
     }
 
-    public void setEsperaES(double esperaES) {
-        this.esperaES = esperaES;
+    public void setTiempoRestanteEnCPU(double tiempoRestanteEnCPU) {
+        this.tiempoRestanteEnCPU = tiempoRestanteEnCPU;
+    }
+
+    public void setPeriodoESRestante(double periodoESRestante) {
+        this.periodoESRestante = periodoESRestante;
     }
 
     public void setEsperaESRestante(double esperaESRestante) {
@@ -120,48 +132,55 @@ public class Proceso {
     }
 
     public void setPrioridad(short prioridad) {
-        if (prioridad >= Proceso.PRIORIDAD_MAXIMA &&
-                prioridad <= Proceso.PRIORIDAD_MINIMA) {
+        if (prioridad >= Proceso.PRIORIDAD_MAXIMA
+                && prioridad <= Proceso.PRIORIDAD_MINIMA) {
             this.prioridad = prioridad;
             return;
         }
         throw new IllegalArgumentException("La prioridad debe ser menor o igual que"
                 + " " + Proceso.PRIORIDAD_MINIMA + " y mayor o igual que "
-                        + Proceso.PRIORIDAD_MAXIMA);
+                + Proceso.PRIORIDAD_MAXIMA);
     }
 
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
 
-    private void iniciarEnvejecimiento() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(ESPERA_ENVEJECIMIENTO);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                this.edad++;
-                if (this.edad == EDAD_ENVEJECIMIENTO) {
-                    this.envejecer();
-                    this.edad = 0;
-                }
-            }
-        }).start();
-    }
-
-    private void envejecer() {
+    public void envejecer() {
         if (this.prioridad > 0) {
             if (this.tipo == Tipo.USUARIO && this.prioridad > Proceso.PRIORIDAD_SO) {
                 this.prioridad--;
+                this.edad = 0;
                 this.planificador.setPrioridadProceso(this, this.prioridad);
-            } else if(this.tipo == Tipo.KERNEL) {
+            } else if (this.tipo == Tipo.KERNEL) {
                 this.prioridad--;
+                this.edad = 0;
                 this.planificador.setPrioridadProceso(this, this.prioridad);
             }
         }
-        System.out.println(this.prioridad);
-        System.out.println(this.pID);
+    }
+    
+    public void ejecutar() {
+        if (this.timer == null) {
+            this.timer = new TimerProceso(this);
+        }
+        this.timer.iniciar();
+    }
+
+    public void bloquear() {
+        this.estado = Estado.BLOQUEADO;
+        this.periodoESRestante = this.periodoES;
+        this.planificador.bloquearProceso(this);
+    }
+    
+    public void desbloquear() {
+        this.estado = Estado.LISTO;
+        this.esperaESRestante = this.esperaES;
+        this.planificador.desbloquearProceso(this.pID);
+    }
+    
+    public void finalizar() {
+        this.estado = Estado.FINALIZADO;
+        this.planificador.finalizarProceso(this.pID);
     }
 }
