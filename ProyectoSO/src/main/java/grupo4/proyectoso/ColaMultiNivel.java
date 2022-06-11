@@ -7,6 +7,7 @@ public class ColaMultiNivel<K, V> {
     private LinkedHashMap<K, V>[] colaMultiNivel;
     private int ultimoNivel;
     private boolean esVacia;
+    private long tamanio;
 
     public ColaMultiNivel(int cantNiveles) {
         this.colaMultiNivel = new LinkedHashMap[cantNiveles + 1];
@@ -14,6 +15,7 @@ public class ColaMultiNivel<K, V> {
             this.colaMultiNivel[i] = new LinkedHashMap<K, V>();
         }
         this.ultimoNivel = 0;
+        this.tamanio = 0;
     }
 
     private boolean nivelValido(int nivel) {
@@ -23,6 +25,7 @@ public class ColaMultiNivel<K, V> {
     public V agregar(K clave, V value, int nivel) {
         if (this.nivelValido(nivel)) {
             this.ultimoNivel = Math.min(this.ultimoNivel, nivel);
+            this.tamanio++;
             return this.colaMultiNivel[nivel].put(clave, value);
         }
         throw new IllegalArgumentException("Nivel inválido, debe ser mayor o igual a 0 y menor a " + this.colaMultiNivel.length);
@@ -30,6 +33,7 @@ public class ColaMultiNivel<K, V> {
 
     public V remover(K clave, int nivel) {
         if (this.nivelValido(nivel)) {
+            this.tamanio--;
             return this.colaMultiNivel[nivel].remove(clave);
         }
 
@@ -39,6 +43,7 @@ public class ColaMultiNivel<K, V> {
     public V remover(K clave) {
         for (LinkedHashMap<K, V> colaNivel : this.colaMultiNivel) {
             if (colaNivel.containsKey(clave)) {
+                this.tamanio--;
                 return colaNivel.remove(clave);
             }
         }
@@ -68,10 +73,10 @@ public class ColaMultiNivel<K, V> {
             return null;
         }
 
-        for (;this.ultimoNivel < this.colaMultiNivel.length; this.ultimoNivel++) {
+        for (; this.ultimoNivel < this.colaMultiNivel.length; this.ultimoNivel++) {
             if (!this.colaMultiNivel[this.ultimoNivel].isEmpty()) {
                 K clave = this.colaMultiNivel[this.ultimoNivel].keySet().iterator().next();
-                return this.colaMultiNivel[this.ultimoNivel].remove(clave);
+                return this.remover(clave, this.ultimoNivel);
             }
         }
 

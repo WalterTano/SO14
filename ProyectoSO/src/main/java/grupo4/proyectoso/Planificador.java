@@ -17,9 +17,9 @@ public class Planificador {
     HashMap<Long, Proceso> procesosBloqueadosPorPID;
     HashMap<Long, Proceso> procesosEnEjecucionPorPID;
 
-    public Planificador(short pID, double quantum) {
-        this.cantProcesadoresTotal = pID;
-        this.cantProcesadoresLibres = pID;
+    public Planificador(short cantProcesadores, double quantum) {
+        this.cantProcesadoresTotal = cantProcesadores;
+        this.cantProcesadoresLibres = cantProcesadores;
         this.quantum = quantum;
         this.multiNivelListos = new ColaMultiNivel<Long, Proceso>(Proceso.PRIORIDAD_MINIMA);
         this.procesosBloqueadosPorPID = new HashMap<Long, Proceso>();
