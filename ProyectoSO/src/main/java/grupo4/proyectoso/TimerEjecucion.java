@@ -4,14 +4,15 @@
  */
 package grupo4.proyectoso;
 
-public class TimerProceso {
+public class TimerEjecucion {
 
     private static final int TICK_PROCESO = 100;
 
     private Proceso proceso;
     private Thread hilo;
 
-    public TimerProceso(Proceso proceso) {
+    public TimerEjecucion(Proceso proceso) {
+        this.proceso = proceso;
         this.hilo = new Thread(() -> {
             while (this.proceso.getEstado() == Proceso.Estado.EN_EJECUCION
                     && this.proceso.getEstado() == Proceso.Estado.BLOQUEADO) {
@@ -20,19 +21,27 @@ public class TimerProceso {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                this.envejecimiento();
+                if (this.proceso.getEstado() == Proceso.Estado.EN_EJECUCION
+                        && this.proceso.getEstado() == Proceso.Estado.BLOQUEADO) {
+                    System.out.println("Timer Ejecución"
+                            + "\nPID: " + this.proceso.getPID() + "- Info Proceso"
+                            + "\nPID: " + this.proceso.getPID() + "-" + " Edad: " + this.proceso.getEdad()
+                            + "\nPID: " + this.proceso.getPID() + "-" + " Estado: " + this.proceso.getEstado().toString()
+                            + "\nPID: " + this.proceso.getPID() + "-" + " Prioridad: " + this.proceso.getPrioridad()
+                            + "\nPID: " + this.proceso.getPID() + "-" + " Tiempo restante CPU: " + this.proceso.getTiempoRestanteEnCPU()
+                            + "\nPID: " + this.proceso.getPID() + "-" + " Espera restante ES: " + this.proceso.getEsperaESRestante()
+                            + "\nPID: " + this.proceso.getPID() + "-" + " Periodo restante hasta ES: " + this.proceso.getPeriodoESRestante()
+                    );
+                    this.gestionarEstados();
+                }
+
             }
         });
     }
-    
-    public void iniciar() {
-        this.hilo.start();
-    }
 
-    private void envejecimiento() {
-        this.proceso.incrementarEdad();
-        if (this.proceso.getEdad() == Proceso.EDAD_ENVEJECIMIENTO) {
-            this.proceso.envejecer();
+    public void iniciar() {
+        if (!this.hilo.isAlive()) {
+            this.hilo.start();
         }
     }
 
@@ -64,7 +73,4 @@ public class TimerProceso {
 
     }
 
-    public Thread getHilo() {
-        return hilo;
-    }
 }

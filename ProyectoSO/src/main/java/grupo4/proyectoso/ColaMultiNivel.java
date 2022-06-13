@@ -6,7 +6,6 @@ public class ColaMultiNivel<K, V> {
 
     private LinkedHashMap<K, V>[] colaMultiNivel;
     private int ultimoNivel;
-    private boolean esVacia;
     private long tamanio;
 
     public ColaMultiNivel(int cantNiveles) {
@@ -14,7 +13,7 @@ public class ColaMultiNivel<K, V> {
         for (int i = 0; i <= cantNiveles; i++) {
             this.colaMultiNivel[i] = new LinkedHashMap<K, V>();
         }
-        this.ultimoNivel = 0;
+        this.ultimoNivel = cantNiveles;
         this.tamanio = 0;
     }
 
@@ -26,7 +25,8 @@ public class ColaMultiNivel<K, V> {
         if (this.nivelValido(nivel)) {
             this.ultimoNivel = Math.min(this.ultimoNivel, nivel);
             this.tamanio++;
-            return this.colaMultiNivel[nivel].put(clave, value);
+            this.colaMultiNivel[nivel].put(clave, value);
+            return value;
         }
         throw new IllegalArgumentException("Nivel inválido, debe ser mayor o igual a 0 y menor a " + this.colaMultiNivel.length);
     }
@@ -47,6 +47,7 @@ public class ColaMultiNivel<K, V> {
                 return colaNivel.remove(clave);
             }
         }
+        
         return null;
     }
 
@@ -81,11 +82,10 @@ public class ColaMultiNivel<K, V> {
         }
 
         this.ultimoNivel = 0;
-        this.esVacia = true;
         return null;
     }
 
     public boolean esVacia() {
-        return this.esVacia;
+        return this.tamanio == 0;
     }
 }

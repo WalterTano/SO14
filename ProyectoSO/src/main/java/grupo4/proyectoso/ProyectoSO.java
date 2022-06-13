@@ -13,14 +13,11 @@ public class ProyectoSO {
         double periodoES = 30000.0;
         double esperaES = 30000.0;
         short prioridad = 50;
-        short poronga = 4;
-        Planificador planif = new Planificador(poronga, 500.0);
+        short cantProcesadores = 1;
+        Planificador planif = new Planificador(cantProcesadores, 500.0);
         planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
-        Thread.sleep(500);
-        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
-        Thread.sleep(500);
-        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
-        Thread.sleep(500);
-        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        //planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        //planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        //planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
     }
 }
