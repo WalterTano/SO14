@@ -15,6 +15,7 @@ public class Planificador {
     private long ultimoPID;
     ColaMultiNivel<Long, Proceso> multiNivelListos;
     HashMap<Long, Proceso> procesosBloqueadosPorPID;
+    TimerPlanificador timer;
     Procesador[] procesadores;
 
     public Planificador(short cantProcesadores, double quantum) {
@@ -24,9 +25,11 @@ public class Planificador {
         this.multiNivelListos = new ColaMultiNivel<Long, Proceso>(Proceso.PRIORIDAD_MINIMA);
         this.procesosBloqueadosPorPID = new HashMap<Long, Proceso>();
         this.procesadores = new Procesador[cantProcesadores];
-        for (int i = 0; i < cantProcesadores; i++) {
-            this.procesadores[i] = new Procesador(quantum, this);
+        for (short i = 0; i < cantProcesadores; i++) {
+            this.procesadores[i] = new Procesador(i, quantum, this);
         }
+        this.timer = new TimerPlanificador(this);
+        this.timer.iniciar();
     }
     
     public boolean tieneProcesadoresLibres() {
@@ -40,6 +43,9 @@ public class Planificador {
             while (this.cantProcesadoresLibres > 0 && proceso != null) {
                 this.despacharProceso(proceso);
                 proceso = this.multiNivelListos.siguiente();
+            }
+            if (proceso != null) {
+                this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad());
             }
         }
     }
@@ -121,7 +127,6 @@ public class Planificador {
             proceso.setEstado(Proceso.Estado.LISTO);
             this.cantProcesadoresLibres++;
             this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad());
-            proceso.suspender();
             this.actualizar();
         }
     }
@@ -146,7 +151,6 @@ public class Planificador {
         Proceso nuevoProc = new Proceso(++this.ultimoPID, tiempoEnCPU, periodoES, esperaES, prioridad, tipo, this);
         boolean resultado = this.multiNivelListos.agregar(nuevoProc.getPID(), nuevoProc, prioridad) != null;
         if (resultado) {
-            nuevoProc.iniciarEnvejecimiento();
             this.actualizar();
         }
         return resultado;
@@ -156,7 +160,6 @@ public class Planificador {
         proceso.setPID(++this.ultimoPID);
         boolean resultado = this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad()) != null;
         if (resultado) {
-            proceso.iniciarEnvejecimiento();
             this.actualizar();
         }
         return resultado;
@@ -175,10 +178,7 @@ public class Planificador {
         Proceso proceso = this.multiNivelListos.remover(proc.getPID(), proc.getPrioridad());
         if (proceso != null) {
             proceso.setPrioridad(prioridad);
-            if (this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad()) != null) {
-                proceso.iniciarEnvejecimiento();
-                return true;
-            }
+            return this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad()) != null;
         }
 
         return false;
@@ -204,7 +204,7 @@ public class Planificador {
         return this.procesosBloqueadosPorPID;
     }
 
-    public Procesador[] getProcesosEnEjecucionPorPID() {
+    public Procesador[] getProcesadores() {
         return this.procesadores;
     }
 

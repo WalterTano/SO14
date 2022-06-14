@@ -10,6 +10,7 @@ public class ColaMultiNivel<K, V> {
 
     public ColaMultiNivel(int cantNiveles) {
         this.colaMultiNivel = new LinkedHashMap[cantNiveles + 1];
+    
         for (int i = 0; i <= cantNiveles; i++) {
             this.colaMultiNivel[i] = new LinkedHashMap<K, V>();
         }
@@ -32,7 +33,8 @@ public class ColaMultiNivel<K, V> {
     }
 
     public V remover(K clave, int nivel) {
-        if (this.nivelValido(nivel)) {
+        if (this.nivelValido(nivel) && 
+                this.colaMultiNivel[nivel].containsKey(clave)) {
             this.tamanio--;
             return this.colaMultiNivel[nivel].remove(clave);
         }
@@ -87,5 +89,13 @@ public class ColaMultiNivel<K, V> {
 
     public boolean esVacia() {
         return this.tamanio == 0;
+    }
+    
+    public long getTamanio() {
+        return this.tamanio;
+    }
+
+    public LinkedHashMap<K, V>[] getColaMultiNivel() {
+        return this.colaMultiNivel;
     }
 }

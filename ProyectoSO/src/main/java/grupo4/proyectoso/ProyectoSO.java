@@ -9,15 +9,15 @@ package grupo4.proyectoso;
 public class ProyectoSO {
 
     public static void main(String[] args) throws InterruptedException {
-        double tiempoTotalEnCPU = 30000.0;
-        double periodoES = 30000.0;
-        double esperaES = 30000.0;
+        double tiempoTotalEnCPU = 3000.0;
+        double periodoES = 4000.0;
+        double esperaES = 3000.0;
         short prioridad = 50;
-        short cantProcesadores = 1;
-        Planificador planif = new Planificador(cantProcesadores, 500.0);
+        short cantProcesadores = 2;
+        Planificador planif = new Planificador(cantProcesadores, 1000.0);
         planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
-        //planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
-        //planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
-        //planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
+        planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
     }
 }

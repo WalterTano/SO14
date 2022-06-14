@@ -7,26 +7,21 @@ package grupo4.proyectoso;
 public class Procesador {
 
     private double quantum;
+    private short id;
     private Proceso proceso;
     private Planificador planificador;
-    private Thread hilo;
+    private TimerProcesador timerProcesador;
 
-    public Procesador(double quantum, Planificador planificador) {
+    public Procesador(short id, double quantum, Planificador planificador) {
+        this.id = id;
         this.quantum = quantum;
         this.planificador = planificador;
-        this.hilo = new Thread(() -> {
-            try {
-                Thread.sleep((long) this.quantum);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            this.planificador.suspenderProceso(this);
-        });
+        this.timerProcesador = new TimerProcesador(this);
     }
  
     public void agregarProceso(Proceso proceso) {
         this.proceso = proceso;
-        this.iniciarQuantum();
+        this.timerProcesador.ejecutar();
     }
     
     public Proceso getProceso() {
@@ -39,9 +34,15 @@ public class Procesador {
         return proc;
     }
 
-    private void iniciarQuantum() {
-        if (!this.hilo.isAlive()) {
-            this.hilo.start();
-        }
+    public double getQuantum() {
+        return this.quantum;
+    }
+    
+    public Planificador getPlanificador() {
+        return this.planificador;
+    }
+    
+    public short getId() {
+        return this.id;
     }
 }

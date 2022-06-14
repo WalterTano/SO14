@@ -22,8 +22,7 @@ public class Proceso {
     private Planificador planificador;
     private Estado estado;
     private Tipo tipo;
-    private TimerEjecucion timerDeEjecucion;
-    private TimerEnvejecimiento timerDeEnvejecimiento;
+    //private TimerEnvejecimiento timerDeEnvejecimiento;
 
     public enum Estado {
         LISTO,
@@ -145,14 +144,6 @@ public class Proceso {
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
-    
-    public void iniciarEnvejecimiento() {
-        if (this.timerDeEnvejecimiento == null) {
-            this.timerDeEnvejecimiento = new TimerEnvejecimiento(this);
-        }
-        this.edad = 0;
-        this.timerDeEnvejecimiento.iniciar();
-    }
 
     public void envejecer() {
         if (this.prioridad > 0) {
@@ -167,13 +158,9 @@ public class Proceso {
             }
         }
     }
-    
+
     public void ejecutar() {
-        if (this.timerDeEjecucion == null) {
-            this.timerDeEjecucion = new TimerEjecucion(this);
-        }
         this.estado = Estado.EN_EJECUCION;
-        this.timerDeEjecucion.iniciar();
     }
 
     public void bloquear() {
@@ -181,21 +168,25 @@ public class Proceso {
         this.periodoESRestante = this.periodoES;
         this.planificador.bloquearProceso(this);
     }
-    
-    public void suspender() {
-        this.estado = Estado.LISTO;
-        this.iniciarEnvejecimiento();
-    }
-    
+
     public void desbloquear() {
         this.estado = Estado.LISTO;
         this.esperaESRestante = this.esperaES;
         this.planificador.desbloquearProceso(this.pID);
-        this.iniciarEnvejecimiento();
     }
-    
+
     public void finalizar() {
         this.estado = Estado.FINALIZADO;
         this.planificador.finalizarProceso(this);
+    }
+
+    public String imprimir() {
+        return "\nPID: " + this.getPID() + "- Info Proceso"
+                + "\nPID: " + this.getPID() + "-" + " Edad: " + this.getEdad()
+                + "\nPID: " + this.getPID() + "-" + " Estado: " + this.getEstado().toString()
+                + "\nPID: " + this.getPID() + "-" + " Prioridad: " + this.getPrioridad()
+                + "\nPID: " + this.getPID() + "-" + " Tiempo restante CPU: " + this.getTiempoRestanteEnCPU()
+                + "\nPID: " + this.getPID() + "-" + " Espera restante ES: " + this.getEsperaESRestante()
+                + "\nPID: " + this.getPID() + "-" + " Periodo restante hasta ES: " + this.getPeriodoESRestante();
     }
 }
