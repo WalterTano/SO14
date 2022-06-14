@@ -15,7 +15,8 @@ public class Planificador {
     private long ultimoPID;
     ColaMultiNivel<Long, Proceso> multiNivelListos;
     HashMap<Long, Proceso> procesosBloqueadosPorPID;
-    HashMap<Long, Proceso> procesosEnEjecucionPorPID;
+    TimerPlanificador timer;
+    Procesador[] procesadores;
 
     public Planificador(short cantProcesadores, double quantum) {
         this.cantProcesadoresTotal = cantProcesadores;
@@ -23,7 +24,12 @@ public class Planificador {
         this.quantum = quantum;
         this.multiNivelListos = new ColaMultiNivel<Long, Proceso>(Proceso.PRIORIDAD_MINIMA);
         this.procesosBloqueadosPorPID = new HashMap<Long, Proceso>();
-        this.procesosEnEjecucionPorPID = new HashMap<Long, Proceso>();
+        this.procesadores = new Procesador[cantProcesadores];
+        for (short i = 0; i < cantProcesadores; i++) {
+            this.procesadores[i] = new Procesador(i, quantum, this);
+        }
+        this.timer = new TimerPlanificador(this);
+        this.timer.iniciar();
     }
     
     public boolean tieneProcesadoresLibres() {
@@ -31,28 +37,42 @@ public class Planificador {
     }
     
     private void actualizar() {
-        
         if (this.tieneProcesadoresLibres()) {
             Proceso proceso = this.multiNivelListos.siguiente();
+            
             while (this.cantProcesadoresLibres > 0 && proceso != null) {
-                this.ejecutarProceso(proceso);
+                this.despacharProceso(proceso);
                 proceso = this.multiNivelListos.siguiente();
+            }
+            if (proceso != null) {
+                this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad());
             }
         }
     }
     
-    private void ejecutarProceso(Proceso proceso) {
-        this.multiNivelListos.remover(proceso.getPID(), proceso.getPrioridad());
-        this.procesosEnEjecucionPorPID.put(proceso.getPID(), proceso);
+    private void despacharProceso(Proceso proceso) {
+        for (Procesador procesador : this.procesadores) {
+            if (procesador.getProceso() == null) {
+                procesador.agregarProceso(proceso);
+                break;
+            }
+        }
+        this.cantProcesadoresLibres--;
         proceso.ejecutar();
     }
 
     public boolean bloquearProceso(Long pID) {
-        if (this.procesosEnEjecucionPorPID.containsKey(pID)) {
-            this.procesosBloqueadosPorPID.put(pID,
-                    this.procesosEnEjecucionPorPID.remove(pID));
-            this.actualizar();
-            return true;
+        for (Procesador procesador : this.procesadores) {
+            if (procesador.getProceso() == null) {
+                continue;
+            }
+            
+            if (procesador.getProceso().getPID() == pID) {
+                this.procesosBloqueadosPorPID.put(pID, procesador.removerProceso());
+                this.cantProcesadoresLibres++;
+                this.actualizar();
+                return true;
+            }
         }
 
         Proceso proc = this.multiNivelListos.remover(pID);
@@ -66,11 +86,17 @@ public class Planificador {
     }
 
     public boolean bloquearProceso(Proceso proc) {
-        if (this.procesosEnEjecucionPorPID.containsKey(proc.getPID())) {
-            this.procesosBloqueadosPorPID.put(proc.getPID(),
-                    this.procesosEnEjecucionPorPID.remove(proc.getPID()));
-            this.actualizar();
-            return true;
+        for (Procesador procesador : this.procesadores) {
+            if (procesador.getProceso() == null) {
+                continue;
+            }
+            
+            if (procesador.getProceso().equals(proc)) {
+                this.procesosBloqueadosPorPID.put(proc.getPID(), procesador.removerProceso());
+                this.cantProcesadoresLibres++;
+                this.actualizar();
+                return true;
+            }
         }
 
         Proceso procResult = this.multiNivelListos.remover(proc.getPID(), proc.getPrioridad());
@@ -94,20 +120,29 @@ public class Planificador {
         return false;
     }
     
-    public void suspenderProceso(Proceso proceso) {
-        if (this.procesosEnEjecucionPorPID.containsKey(proceso.getPID())) {
-            this.procesosEnEjecucionPorPID.remove(proceso.getPID());
+    public void suspenderProceso(Procesador procesador) {
+        Proceso proc = procesador.getProceso();
+        if (proc != null && proc.getEstado() == Proceso.Estado.EN_EJECUCION) {
+            Proceso proceso = procesador.removerProceso();
             proceso.setEstado(Proceso.Estado.LISTO);
+            this.cantProcesadoresLibres++;
             this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad());
             this.actualizar();
         }
     }
 
-    public boolean finalizarProceso(Long pID) {
-        if (this.procesosEnEjecucionPorPID.containsKey(pID)) {
-            Proceso proc = this.procesosEnEjecucionPorPID.remove(pID);
-            this.actualizar();
-            return true;
+    public boolean finalizarProceso(Proceso proceso) {
+        for (Procesador procesador : this.procesadores) {
+            if (procesador.getProceso() == null) {
+                continue;
+            }
+            
+            if (procesador.getProceso().equals(proceso)) {
+                Proceso proc = procesador.removerProceso();
+                this.cantProcesadoresLibres++;
+                this.actualizar();
+                return true;
+            }
         }
         return false;
     }
@@ -150,15 +185,15 @@ public class Planificador {
     }
 
     public short getCantProcesadoresTotal() {
-        return cantProcesadoresTotal;
+        return this.cantProcesadoresTotal;
     }
 
     public short getCantProcesadoresLibres() {
-        return cantProcesadoresLibres;
+        return this.cantProcesadoresLibres;
     }
 
     public double getQuantum() {
-        return quantum;
+        return this.quantum;
     }
 
     public ColaMultiNivel<Long, Proceso> getMultiNivelListos() {
@@ -166,11 +201,11 @@ public class Planificador {
     }
 
     public HashMap<Long, Proceso> getProcesosBloqueadosPorPID() {
-        return procesosBloqueadosPorPID;
+        return this.procesosBloqueadosPorPID;
     }
 
-    public HashMap<Long, Proceso> getProcesosEnEjecucionPorPID() {
-        return procesosEnEjecucionPorPID;
+    public Procesador[] getProcesadores() {
+        return this.procesadores;
     }
 
     public void setCantProcesadoresTotal(short cantProcesadoresTotal) {

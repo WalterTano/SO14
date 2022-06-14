@@ -9,11 +9,9 @@ public class Proceso {
     public static final int PRIORIDAD_MINIMA = 99;
     public static final int PRIORIDAD_MAXIMA = 0;
     public static final int PRIORIDAD_SO = 15;
-    public static final int EDAD_ENVEJECIMIENTO = 50;
 
     private long pID;
     private short edad;
-    private Planificador planificador;
     private double tiempoTotalEnCPU;
     private double tiempoRestanteEnCPU;
     private double periodoES;
@@ -21,9 +19,10 @@ public class Proceso {
     private double esperaES;
     private double esperaESRestante;
     private short prioridad;
+    private Planificador planificador;
     private Estado estado;
     private Tipo tipo;
-    private TimerProceso timer;
+    //private TimerEnvejecimiento timerDeEnvejecimiento;
 
     public enum Estado {
         LISTO,
@@ -37,7 +36,7 @@ public class Proceso {
         USUARIO
     }
 
-    public Proceso(long pID, double tiempoTotalEnCPU, double periodoES, double esperaES, short prioridad, Tipo tipo, Planificador planif) {
+    public Proceso(long pID, double tiempoTotalEnCPU, double periodoES, double esperaES, short prioridad, Tipo tipo, Planificador planificador) {
         this.pID = pID;
         this.tiempoTotalEnCPU = tiempoTotalEnCPU;
         this.tiempoRestanteEnCPU = tiempoTotalEnCPU;
@@ -49,7 +48,7 @@ public class Proceso {
         this.tipo = tipo;
         this.edad = 0;
         this.estado = Estado.LISTO;
-        this.planificador = planif;
+        this.planificador = planificador;
     }
 
     public Proceso(double tiempoTotalEnCPU, double periodoES, double esperaES, short prioridad, Tipo tipo, Planificador planif) {
@@ -159,12 +158,9 @@ public class Proceso {
             }
         }
     }
-    
+
     public void ejecutar() {
-        if (this.timer == null) {
-            this.timer = new TimerProceso(this);
-        }
-        this.timer.iniciar();
+        this.estado = Estado.EN_EJECUCION;
     }
 
     public void bloquear() {
@@ -172,15 +168,25 @@ public class Proceso {
         this.periodoESRestante = this.periodoES;
         this.planificador.bloquearProceso(this);
     }
-    
+
     public void desbloquear() {
         this.estado = Estado.LISTO;
         this.esperaESRestante = this.esperaES;
         this.planificador.desbloquearProceso(this.pID);
     }
-    
+
     public void finalizar() {
         this.estado = Estado.FINALIZADO;
-        this.planificador.finalizarProceso(this.pID);
+        this.planificador.finalizarProceso(this);
+    }
+
+    public String imprimir() {
+        return "\nPID: " + this.getPID() + "- Info Proceso"
+                + "\nPID: " + this.getPID() + "-" + " Edad: " + this.getEdad()
+                + "\nPID: " + this.getPID() + "-" + " Estado: " + this.getEstado().toString()
+                + "\nPID: " + this.getPID() + "-" + " Prioridad: " + this.getPrioridad()
+                + "\nPID: " + this.getPID() + "-" + " Tiempo restante CPU: " + this.getTiempoRestanteEnCPU()
+                + "\nPID: " + this.getPID() + "-" + " Espera restante ES: " + this.getEsperaESRestante()
+                + "\nPID: " + this.getPID() + "-" + " Periodo restante hasta ES: " + this.getPeriodoESRestante();
     }
 }
