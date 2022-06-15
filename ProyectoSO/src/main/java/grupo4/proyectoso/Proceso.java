@@ -114,10 +114,6 @@ public class Proceso {
         this.pID = pID;
     }
 
-    public void incrementarEdad() {
-        this.edad++;
-    }
-
     public void setTiempoRestanteEnCPU(double tiempoRestanteEnCPU) {
         this.tiempoRestanteEnCPU = tiempoRestanteEnCPU;
     }
@@ -143,6 +139,10 @@ public class Proceso {
 
     public void setEstado(Estado estado) {
         this.estado = estado;
+    }
+    
+    public void incrementarEdad() {
+        this.edad++;
     }
 
     public void envejecer() {

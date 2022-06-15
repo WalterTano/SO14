@@ -13,10 +13,10 @@ public class Planificador {
     private short cantProcesadoresLibres;
     private double quantum;                 //cantidad de tiempo durante el que el planificador le da CPU a un proceso en RR
     private long ultimoPID;
-    ColaMultiNivel<Long, Proceso> multiNivelListos;
-    HashMap<Long, Proceso> procesosBloqueadosPorPID;
-    TimerPlanificador timer;
-    Procesador[] procesadores;
+    private ColaMultiNivel<Long, Proceso> multiNivelListos;
+    private HashMap<Long, Proceso> procesosBloqueadosPorPID;
+    private TimerPlanificador timer;
+    private Procesador[] procesadores;
 
     public Planificador(short cantProcesadores, double quantum) {
         this.cantProcesadoresTotal = cantProcesadores;
@@ -31,15 +31,15 @@ public class Planificador {
         this.timer = new TimerPlanificador(this);
         this.timer.iniciar();
     }
-    
+
     public boolean tieneProcesadoresLibres() {
         return this.cantProcesadoresLibres > 0;
     }
-    
+
     private void actualizar() {
         if (this.tieneProcesadoresLibres()) {
             Proceso proceso = this.multiNivelListos.siguiente();
-            
+
             while (this.cantProcesadoresLibres > 0 && proceso != null) {
                 this.despacharProceso(proceso);
                 proceso = this.multiNivelListos.siguiente();
@@ -49,7 +49,7 @@ public class Planificador {
             }
         }
     }
-    
+
     private void despacharProceso(Proceso proceso) {
         for (Procesador procesador : this.procesadores) {
             if (procesador.getProceso() == null) {
@@ -66,7 +66,7 @@ public class Planificador {
             if (procesador.getProceso() == null) {
                 continue;
             }
-            
+
             if (procesador.getProceso().getPID() == pID) {
                 this.procesosBloqueadosPorPID.put(pID, procesador.removerProceso());
                 this.cantProcesadoresLibres++;
@@ -81,7 +81,7 @@ public class Planificador {
             this.actualizar();
             return true;
         }
-        
+
         return false;
     }
 
@@ -90,7 +90,7 @@ public class Planificador {
             if (procesador.getProceso() == null) {
                 continue;
             }
-            
+
             if (procesador.getProceso().equals(proc)) {
                 this.procesosBloqueadosPorPID.put(proc.getPID(), procesador.removerProceso());
                 this.cantProcesadoresLibres++;
@@ -119,7 +119,7 @@ public class Planificador {
 
         return false;
     }
-    
+
     public void suspenderProceso(Procesador procesador) {
         Proceso proc = procesador.getProceso();
         if (proc != null && proc.getEstado() == Proceso.Estado.EN_EJECUCION) {
@@ -136,7 +136,7 @@ public class Planificador {
             if (procesador.getProceso() == null) {
                 continue;
             }
-            
+
             if (procesador.getProceso().equals(proceso)) {
                 Proceso proc = procesador.removerProceso();
                 this.cantProcesadoresLibres++;
@@ -174,16 +174,6 @@ public class Planificador {
         return true;
     }
 
-    public boolean setPrioridadProceso(Proceso proc, short prioridad) {
-        Proceso proceso = this.multiNivelListos.remover(proc.getPID(), proc.getPrioridad());
-        if (proceso != null) {
-            proceso.setPrioridad(prioridad);
-            return this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad()) != null;
-        }
-
-        return false;
-    }
-
     public short getCantProcesadoresTotal() {
         return this.cantProcesadoresTotal;
     }
@@ -214,5 +204,15 @@ public class Planificador {
 
     public void setQuantum(double quantum) {
         this.quantum = quantum;
+    }
+
+    public boolean setPrioridadProceso(Proceso proc, short prioridad) {
+        Proceso proceso = this.multiNivelListos.remover(proc.getPID(), proc.getPrioridad());
+        if (proceso != null) {
+            proceso.setPrioridad(prioridad);
+            return this.multiNivelListos.agregar(proceso.getPID(), proceso, proceso.getPrioridad()) != null;
+        }
+
+        return false;
     }
 }
