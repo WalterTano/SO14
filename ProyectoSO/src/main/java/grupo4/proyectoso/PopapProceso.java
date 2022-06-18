@@ -47,8 +47,12 @@ public class PopapProceso extends javax.swing.JFrame {
         lblPIDPopap.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         lblPIDPopap.setText("PID:");
 
+        txtPIDPopap.setText(String.valueOf(this.pid));
+
         lblPrioridadPopap.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         lblPrioridadPopap.setText("Prioridad:");
+
+        txtPrioridadPopap.setText(String.valueOf(this.prioridad));
 
         btnModificarPrioridadPopap.setText("Modificar Prioridad");
         btnModificarPrioridadPopap.setActionCommand("v");
@@ -64,16 +68,15 @@ public class PopapProceso extends javax.swing.JFrame {
             panelPopapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPopapLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(panelPopapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelPopapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelPopapLayout.createSequentialGroup()
                         .addGap(30, 30, 30)
-                        .addComponent(lblPIDPopap)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPIDPopap))
-                    .addGroup(panelPopapLayout.createSequentialGroup()
-                        .addComponent(lblPrioridadPopap)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPrioridadPopap, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblPIDPopap))
+                    .addComponent(lblPrioridadPopap))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelPopapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtPrioridadPopap)
+                    .addComponent(txtPIDPopap))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
                 .addGroup(panelPopapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnBloquearProceso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -119,48 +122,42 @@ public class PopapProceso extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBloquearProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloquearProcesoActionPerformed
-        // TODO add your handling code here:
+        this.proceso.bloquear();
     }//GEN-LAST:event_btnBloquearProcesoActionPerformed
 
     private void btnModificarPrioridadPopapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPrioridadPopapActionPerformed
-        // TODO add your handling code here:
+        
+        this.proceso.modificarPrioridad(this.getPrioridad());
     }//GEN-LAST:event_btnModificarPrioridadPopapActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PopapProceso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PopapProceso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PopapProceso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PopapProceso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    public void setProceso(Proceso proceso) {
+        this.proceso = proceso;
+        if (this.proceso != null) {
+            this.pid = this.proceso.getPID();
+            this.prioridad = this.proceso.getPrioridad();
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PopapProceso().setVisible(true);
-            }
-        });
+    }
+    
+    public void setPlanificador(Planificador planificador) {
+        this.planificador = planificador;
+    }
+    
+    public Proceso getProceso() {
+        return this.proceso;
+    }
+    
+    public long getPID() {
+        return this.pid;
+    }
+    
+    public short getPrioridad() {
+        return this.prioridad;
     }
 
+    private Proceso proceso;
+    private Planificador planificador;
+    private long pid;
+    private short prioridad;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBloquearProceso;
     private javax.swing.JButton btnModificarPrioridadPopap;

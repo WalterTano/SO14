@@ -144,6 +144,11 @@ public class Proceso {
     public void incrementarEdad() {
         this.edad++;
     }
+    
+    public void modificarPrioridad(short prioridad) {
+        this.setPrioridad(prioridad);
+        this.planificador.setPrioridadProceso(this, this.prioridad);
+    }
 
     public void envejecer() {
         if (this.prioridad > 0) {

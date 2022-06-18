@@ -15,6 +15,7 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() {
         initComponents();
+        this.panelProcesos.setVisible(false);
     }
 
     /**
@@ -26,13 +27,6 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelInicial = new javax.swing.JPanel();
-        lblTitulo = new javax.swing.JLabel();
-        lblTiempoEjecucion = new javax.swing.JLabel();
-        spnCantProcesadores = new javax.swing.JSpinner();
-        lblCantProcesadores = new javax.swing.JLabel();
-        spnTiempoEjecucion = new javax.swing.JSpinner();
-        btnIniciar = new javax.swing.JButton();
         panelProcesos = new javax.swing.JPanel();
         lblEnEjecucion = new javax.swing.JLabel();
         spanelEnEjecucion = new javax.swing.JScrollPane();
@@ -44,61 +38,15 @@ public class Principal extends javax.swing.JFrame {
         spanelBloqueados = new javax.swing.JScrollPane();
         tblBloqueados = new javax.swing.JTable();
         btnAgregarProceso = new javax.swing.JButton();
-
-        panelInicial.setName("Panel_inicial"); // NOI18N
-
-        lblTitulo.setFont(new java.awt.Font("Georgia", 1, 24)); // NOI18N
-        lblTitulo.setText("Planificador de procesos");
-
-        lblTiempoEjecucion.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        lblTiempoEjecucion.setText("Tiempo de ejecución de los procesos:");
-
-        lblCantProcesadores.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        lblCantProcesadores.setText("Cantidad de procesadores:");
-
-        btnIniciar.setText("Iniciar");
-
-        javax.swing.GroupLayout panelInicialLayout = new javax.swing.GroupLayout(panelInicial);
-        panelInicial.setLayout(panelInicialLayout);
-        panelInicialLayout.setHorizontalGroup(
-            panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelInicialLayout.createSequentialGroup()
-                .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelInicialLayout.createSequentialGroup()
-                        .addGap(232, 232, 232)
-                        .addComponent(lblTitulo))
-                    .addGroup(panelInicialLayout.createSequentialGroup()
-                        .addGap(85, 85, 85)
-                        .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelInicialLayout.createSequentialGroup()
-                                .addComponent(lblTiempoEjecucion)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spnTiempoEjecucion, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelInicialLayout.createSequentialGroup()
-                                .addComponent(lblCantProcesadores)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spnCantProcesadores, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnIniciar))))
-                .addContainerGap(218, Short.MAX_VALUE))
-        );
-        panelInicialLayout.setVerticalGroup(
-            panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelInicialLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(lblTitulo)
-                .addGap(46, 46, 46)
-                .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panelInicialLayout.createSequentialGroup()
-                        .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblCantProcesadores)
-                            .addComponent(spnCantProcesadores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(lblTiempoEjecucion))
-                    .addComponent(spnTiempoEjecucion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
-                .addComponent(btnIniciar)
-                .addContainerGap(431, Short.MAX_VALUE))
-        );
+        btnVolver = new javax.swing.JButton();
+        panelInicial = new javax.swing.JPanel();
+        lblTitulo = new javax.swing.JLabel();
+        lblTiempoEjecucion = new javax.swing.JLabel();
+        spnCantProcesadores = new javax.swing.JSpinner();
+        lblCantProcesadores = new javax.swing.JLabel();
+        spnQuantum = new javax.swing.JSpinner();
+        btnIniciar = new javax.swing.JButton();
+        lblMs = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -151,31 +99,49 @@ public class Principal extends javax.swing.JFrame {
         spanelBloqueados.setViewportView(tblBloqueados);
 
         btnAgregarProceso.setText("Agregar Proceso");
+        btnAgregarProceso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarProcesoActionPerformed(evt);
+            }
+        });
+
+        btnVolver.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnVolver.setText("Volver");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelProcesosLayout = new javax.swing.GroupLayout(panelProcesos);
         panelProcesos.setLayout(panelProcesosLayout);
         panelProcesosLayout.setHorizontalGroup(
             panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelProcesosLayout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(spanelListos, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelProcesosLayout.createSequentialGroup()
-                        .addComponent(lblListos)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAgregarProceso)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+            .addGroup(panelProcesosLayout.createSequentialGroup()
+                .addContainerGap(26, Short.MAX_VALUE)
                 .addGroup(panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblEnEjecucion)
-                    .addComponent(spanelEnEjecucion, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblBloqueados)
-                    .addComponent(spanelBloqueados, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30))
+                    .addGroup(panelProcesosLayout.createSequentialGroup()
+                        .addComponent(btnVolver)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panelProcesosLayout.createSequentialGroup()
+                        .addGroup(panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(spanelListos, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelProcesosLayout.createSequentialGroup()
+                                .addComponent(lblListos)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnAgregarProceso)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                        .addGroup(panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblEnEjecucion)
+                            .addComponent(spanelEnEjecucion, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblBloqueados)
+                            .addComponent(spanelBloqueados, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(26, Short.MAX_VALUE))))
         );
         panelProcesosLayout.setVerticalGroup(
             panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelProcesosLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblEnEjecucion)
                     .addComponent(lblListos)
@@ -189,26 +155,138 @@ public class Principal extends javax.swing.JFrame {
                         .addGap(28, 28, 28)
                         .addComponent(spanelBloqueados, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(spanelListos))
-                .addGap(0, 27, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addComponent(btnVolver)
+                .addContainerGap(34, Short.MAX_VALUE))
         );
+
+        btnVolver.getAccessibleContext().setAccessibleName("Volver");
+
+        panelInicial.setName("Panel_inicial"); // NOI18N
+
+        lblTitulo.setFont(new java.awt.Font("Georgia", 1, 24)); // NOI18N
+        lblTitulo.setText("Planificador de procesos");
+
+        lblTiempoEjecucion.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        lblTiempoEjecucion.setText("Quantum:");
+
+        spnCantProcesadores.setModel(new javax.swing.SpinnerNumberModel(1, 1, 32, 1));
+
+        lblCantProcesadores.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        lblCantProcesadores.setText("Cantidad de procesadores:");
+
+        spnQuantum.setModel(new javax.swing.SpinnerNumberModel(100, 100, null, 10));
+
+        btnIniciar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnIniciar.setText("Iniciar");
+        btnIniciar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIniciarActionPerformed(evt);
+            }
+        });
+
+        lblMs.setText("ms");
+
+        javax.swing.GroupLayout panelInicialLayout = new javax.swing.GroupLayout(panelInicial);
+        panelInicial.setLayout(panelInicialLayout);
+        panelInicialLayout.setHorizontalGroup(
+            panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelInicialLayout.createSequentialGroup()
+                .addContainerGap(267, Short.MAX_VALUE)
+                .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelInicialLayout.createSequentialGroup()
+                        .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblTiempoEjecucion)
+                            .addComponent(lblCantProcesadores))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(spnQuantum)
+                            .addComponent(spnCantProcesadores, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblMs))
+                    .addGroup(panelInicialLayout.createSequentialGroup()
+                        .addGap(110, 110, 110)
+                        .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(268, Short.MAX_VALUE))
+        );
+        panelInicialLayout.setVerticalGroup(
+            panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelInicialLayout.createSequentialGroup()
+                .addContainerGap(29, Short.MAX_VALUE)
+                .addComponent(lblTitulo)
+                .addGap(48, 48, 48)
+                .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblTiempoEjecucion)
+                    .addGroup(panelInicialLayout.createSequentialGroup()
+                        .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(spnCantProcesadores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblCantProcesadores))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(spnQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblMs))))
+                .addGap(48, 48, 48)
+                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(385, Short.MAX_VALUE))
+        );
+
+        lblMs.getAccessibleContext().setAccessibleName("lblMs");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 876, Short.MAX_VALUE)
+            .addGap(0, 879, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelProcesos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(panelInicial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(panelProcesos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 542, Short.MAX_VALUE)
+            .addGap(0, 642, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(panelProcesos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(panelInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(panelProcesos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
+        double quantum = Double.valueOf(String.valueOf(this.spnQuantum.getValue()));
+        short cantProcesadores = Short.valueOf(String.valueOf(this.spnQuantum.getValue()));
+        this.planificador = new Planificador(cantProcesadores, quantum);
+        this.panelInicial.setVisible(false);
+        this.panelProcesos.setVisible(true);
+    }//GEN-LAST:event_btnIniciarActionPerformed
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        this.planificador = null;
+        this.panelInicial.setVisible(true);
+        this.panelProcesos.setVisible(false);
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void btnAgregarProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProcesoActionPerformed
+        if (this.popupProceso == null) {
+            this.popupProceso = new PopapProceso(this.procesoSeleccionado);
+        }
+        
+    }//GEN-LAST:event_btnAgregarProcesoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -244,14 +322,19 @@ public class Principal extends javax.swing.JFrame {
             }
         });
     }
-
+    
+    private Planificador planificador;
+    private PopapProceso popupProceso;
+    private Proceso procesoSeleccionado;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProceso;
     private javax.swing.JButton btnIniciar;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JLabel lblBloqueados;
     private javax.swing.JLabel lblCantProcesadores;
     private javax.swing.JLabel lblEnEjecucion;
     private javax.swing.JLabel lblListos;
+    private javax.swing.JLabel lblMs;
     private javax.swing.JLabel lblTiempoEjecucion;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JPanel panelInicial;
@@ -260,7 +343,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane spanelEnEjecucion;
     private javax.swing.JScrollPane spanelListos;
     private javax.swing.JSpinner spnCantProcesadores;
-    private javax.swing.JSpinner spnTiempoEjecucion;
+    private javax.swing.JSpinner spnQuantum;
     private javax.swing.JTable tblBloqueados;
     private javax.swing.JTable tblEnEjecucion;
     private javax.swing.JTable tblListos;
