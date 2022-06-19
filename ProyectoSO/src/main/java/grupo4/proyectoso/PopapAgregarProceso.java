@@ -163,7 +163,7 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
         double tiempoEnCPU = Double.valueOf(txtTTotalEjecucion.getText());
         double periodoES = Double.valueOf(txtTRealizaES.getText());
         double esperaES = Double.valueOf(txtTEsperaES.getText());
-        short prioridad = Short.valueOf(String.valueOf(spnPrioridad.getValue()));
+        short prioridad = (short) (Short.valueOf(String.valueOf(spnPrioridad.getValue())) - 1);
         Proceso.Tipo tipo = Proceso.Tipo.USUARIO;
         if (String.valueOf(cboxTipoProceso.getSelectedItem()).equals("SO")) {
             tipo = Proceso.Tipo.SO;

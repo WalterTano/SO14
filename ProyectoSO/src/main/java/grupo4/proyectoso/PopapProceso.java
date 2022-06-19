@@ -142,10 +142,12 @@ public class PopapProceso extends javax.swing.JFrame {
 
     private void btnModificarPrioridadPopapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPrioridadPopapActionPerformed
         this.pid = Long.valueOf(this.txtPIDPopap.getText());
-        this.prioridad = Short.valueOf(this.txtPrioridadPopap.getText());
+        this.prioridad = (short) (Short.valueOf(this.txtPrioridadPopap.getText()) - 1);
         if (this.proceso != null && this.proceso.getPID() == this.pid &&
                 this.proceso.getPrioridad() != this.prioridad) {
-            this.planificador.setPrioridadProceso(this.proceso, this.prioridad);
+            if (!this.planificador.setPrioridadProceso(this.proceso, this.prioridad)) {
+                this.proceso.setPrioridad(prioridad);
+            }
         } else {
             if (this.planificador.getProcesosBloqueadosPorPID().containsKey(this.pid)) {
                 this.planificador.getProcesosBloqueadosPorPID().get(this.pid).setPrioridad(this.prioridad);

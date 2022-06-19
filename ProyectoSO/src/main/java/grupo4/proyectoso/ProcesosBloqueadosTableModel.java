@@ -66,7 +66,7 @@ public class ProcesosBloqueadosTableModel extends ProcesosTableModel {
         if (p != null) {
             switch(columnIndex) {
                 case 0: return p.getPID();
-                case 1: return String.valueOf(p.getPrioridad());
+                case 1: return String.valueOf(p.getPrioridad() + 1);
                 case 2: return String.valueOf(p.getTiempoRestanteEnCPU());
                 case 3: return String.valueOf(p.getEsperaESRestante());
                 case 4: return p.getMotivoBloqueo();

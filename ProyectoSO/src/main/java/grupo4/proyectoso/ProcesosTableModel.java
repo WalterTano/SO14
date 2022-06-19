@@ -53,7 +53,7 @@ public class ProcesosTableModel extends javax.swing.table.AbstractTableModel{
             switch(columnIndex) {
                 case 0: return p.getPID();
                 case 1: return p.getTipo().toString();
-                case 2: return String.valueOf(p.getPrioridad());
+                case 2: return String.valueOf(p.getPrioridad() + 1);
                 case 3: return String.valueOf(p.getTiempoRestanteEnCPU());
                 case 4: return p.getEstado().toString();
             }

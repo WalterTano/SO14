@@ -77,6 +77,7 @@ public class Principal extends javax.swing.JFrame {
         tblBloqueados = new javax.swing.JTable();
         btnAgregarProceso = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
+        btnCargaMasiva = new javax.swing.JButton();
         panelInicial = new javax.swing.JPanel();
         lblTitulo = new javax.swing.JLabel();
         lblTiempoEjecucion = new javax.swing.JLabel();
@@ -142,6 +143,13 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        btnCargaMasiva.setText("Cargar CSV");
+        btnCargaMasiva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCargaMasivaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelProcesosLayout = new javax.swing.GroupLayout(panelProcesos);
         panelProcesos.setLayout(panelProcesosLayout);
         panelProcesosLayout.setHorizontalGroup(
@@ -158,6 +166,8 @@ public class Principal extends javax.swing.JFrame {
                             .addGroup(panelProcesosLayout.createSequentialGroup()
                                 .addComponent(lblListos)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCargaMasiva)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnAgregarProceso)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                         .addGroup(panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,7 +184,8 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblEnEjecucion)
                     .addComponent(lblListos)
-                    .addComponent(btnAgregarProceso))
+                    .addComponent(btnAgregarProceso)
+                    .addComponent(btnCargaMasiva))
                 .addGap(25, 25, 25)
                 .addGroup(panelProcesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelProcesosLayout.createSequentialGroup()
@@ -333,6 +344,14 @@ public class Principal extends javax.swing.JFrame {
         this.popupAgregarProceso.setVisible(true);
     }//GEN-LAST:event_btnAgregarProcesoActionPerformed
 
+    private void btnCargaMasivaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargaMasivaActionPerformed
+        if (this.popupCargaMasiva != null && this.popupCargaMasiva.isVisible())
+            return;
+        
+        this.popupCargaMasiva = new PopapCargaMasiva(this.planificador);
+        this.popupCargaMasiva.setVisible(true);
+    }//GEN-LAST:event_btnCargaMasivaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -372,6 +391,7 @@ public class Principal extends javax.swing.JFrame {
     
     private Planificador planificador;
     private PopapProceso popupProceso;
+    private PopapCargaMasiva popupCargaMasiva;
     private PopapAgregarProceso popupAgregarProceso;
     private javax.swing.table.AbstractTableModel modeloTablaListos;
     private javax.swing.table.AbstractTableModel modeloTablaBloqueados;
@@ -392,6 +412,7 @@ public class Principal extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProceso;
+    private javax.swing.JButton btnCargaMasiva;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel lblBloqueados;

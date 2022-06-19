@@ -8,6 +8,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <exec.mainClass>grupo4.proyectoso.ProyectoSO</exec.mainClass>
+        <exec.mainClass>grupo4.proyectoso.Principal</exec.mainClass>
     </properties>
 </project>
