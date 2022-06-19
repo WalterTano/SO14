@@ -1,6 +1,5 @@
 package grupo4.proyectoso;
 
-
 public class TimerProcesador {
         
     private static final int TICK_PROCESO = 100;
@@ -21,11 +20,11 @@ public class TimerProcesador {
                 }
                 if (this.procesador.getProceso() != null){
                     this.quantumRestante -= TICK_PROCESO;
-                    System.out.println("Timer Procesador " + this.procesador.getId() + " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<".toUpperCase() + this.procesador.getProceso().imprimir());
+                    //System.out.println("Timer Procesador " + this.procesador.getId() + " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<".toUpperCase() + this.procesador.getProceso().imprimir());
                     this.tick(this.procesador.getProceso());
                     if (this.quantumRestante <= 0) {
                         this.quantumRestante = this.procesador.getQuantum();
-                        System.out.println("============== QUANTUM ==============");
+                        //System.out.println("============== QUANTUM ==============");
                         this.procesador.getPlanificador().suspenderProceso(this.procesador);
                     }
                 }
@@ -46,6 +45,7 @@ public class TimerProcesador {
         proceso.setPeriodoESRestante(periodoESRestante);
 
         if (periodoESRestante <= 0) {
+            proceso.setMotivoBloqueo("E/S");
             proceso.bloquear();
             this.quantumRestante = this.procesador.getQuantum();
         }

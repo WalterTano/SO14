@@ -5,21 +5,18 @@
 
 package grupo4.proyectoso;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 
 public class ProyectoSO {
 
     public static void main(String[] args) throws InterruptedException {
-        double tiempoTotalEnCPU = 5000.0;
-        double periodoES = 2000.0;
-        double esperaES = 1500.0;
-        short prioridad = 50;
-        short cantProcesadores = 4;
-        Planificador planif = new Planificador(cantProcesadores, 1000.0);
-        for (int i = 0; i < 500; i++) {
-            planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.USUARIO);
-            if (i % 5 == 0){
-                planif.insertarProceso(tiempoTotalEnCPU, periodoES, esperaES, prioridad, Proceso.Tipo.KERNEL);
-            }
-        }
+        ArrayList<Integer> coso = new ArrayList<Integer>();
+        coso.add(1);
+        System.out.println(coso instanceof List<Integer>);
+        System.out.println(coso instanceof ArrayList<Integer>);
+        System.out.println(coso instanceof Collection<Integer>);  
     }
 }

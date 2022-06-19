@@ -4,7 +4,7 @@
  */
 package grupo4.proyectoso;
 
-public class Proceso {
+public class Proceso implements Comparable {
 
     public static final int PRIORIDAD_MINIMA = 98;
     public static final int PRIORIDAD_MAXIMA = 0;
@@ -19,10 +19,10 @@ public class Proceso {
     private double esperaES;
     private double esperaESRestante;
     private short prioridad;
+    private String motivoBloqueo;
     private Planificador planificador;
     private Estado estado;
     private Tipo tipo;
-    //private TimerEnvejecimiento timerDeEnvejecimiento;
 
     public enum Estado {
         LISTO,
@@ -32,7 +32,7 @@ public class Proceso {
     }
 
     public enum Tipo {
-        KERNEL,
+        SO,
         USUARIO
     }
 
@@ -49,6 +49,7 @@ public class Proceso {
         this.edad = 0;
         this.estado = Estado.LISTO;
         this.planificador = planificador;
+        this.motivoBloqueo = "";
     }
 
     public Proceso(double tiempoTotalEnCPU, double periodoES, double esperaES, short prioridad, Tipo tipo, Planificador planif) {
@@ -63,6 +64,7 @@ public class Proceso {
         this.edad = 0;
         this.estado = Estado.LISTO;
         this.planificador = planif;
+        this.motivoBloqueo = "";
     }
 
     @Override
@@ -109,6 +111,14 @@ public class Proceso {
     public Estado getEstado() {
         return estado;
     }
+    
+    public String getMotivoBloqueo() {
+        return this.motivoBloqueo;
+    }
+    
+    public Tipo getTipo() {
+        return this.tipo;
+    }
 
     protected void setPID(long pID) {
         this.pID = pID;
@@ -141,6 +151,10 @@ public class Proceso {
         this.estado = estado;
     }
     
+    public void setMotivoBloqueo(String motivo) {
+        this.motivoBloqueo = motivo;
+    }
+    
     public void incrementarEdad() {
         this.edad++;
     }
@@ -151,7 +165,7 @@ public class Proceso {
                 this.prioridad--;
                 this.edad = 0;
                 this.planificador.setPrioridadProceso(this, this.prioridad);
-            } else if (this.tipo == Tipo.KERNEL) {
+            } else if (this.tipo == Tipo.SO) {
                 this.prioridad--;
                 this.edad = 0;
                 this.planificador.setPrioridadProceso(this, this.prioridad);
@@ -188,5 +202,17 @@ public class Proceso {
                 + "\nPID: " + this.getPID() + "-" + " Tiempo restante CPU: " + this.getTiempoRestanteEnCPU()
                 + "\nPID: " + this.getPID() + "-" + " Espera restante ES: " + this.getEsperaESRestante()
                 + "\nPID: " + this.getPID() + "-" + " Periodo restante hasta ES: " + this.getPeriodoESRestante();
+    }
+    
+    @Override
+    public int compareTo(Object o) {
+        Proceso otroProceso = (Proceso) o;
+        if (otroProceso.getEsperaESRestante() == this.esperaESRestante) {
+            return 0;
+        } else if (otroProceso.getEsperaESRestante() > this.esperaESRestante) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 }

@@ -35,8 +35,6 @@ public class PopapProceso extends javax.swing.JFrame {
         txtPrioridadPopap = new javax.swing.JTextField();
         btnModificarPrioridadPopap = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
         btnBloquearProceso.setText("Bloquear");
         btnBloquearProceso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -122,17 +120,29 @@ public class PopapProceso extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBloquearProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloquearProcesoActionPerformed
+        this.pid = Long.valueOf(this.txtPIDPopap.getText());
         if (this.proceso != null && this.proceso.getPID() == this.pid) {
+            this.proceso.setMotivoBloqueo("Usuario");
             this.proceso.bloquear();
         } else {
+            for (Procesador procesador : this.planificador.getProcesadores()) {
+                if (procesador.getProceso() != null && procesador.getProceso().getPID() == this.pid) {
+                    procesador.getProceso().setMotivoBloqueo("Usuario");
+                    procesador.getProceso().bloquear();
+                    return;
+                }
+            }
             Proceso proceso = this.planificador.getMultiNivelListos().obtener(this.pid);
             if (proceso != null) {
+                proceso.setMotivoBloqueo("Usuario");
                 proceso.bloquear();
             }
         }
     }//GEN-LAST:event_btnBloquearProcesoActionPerformed
 
     private void btnModificarPrioridadPopapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPrioridadPopapActionPerformed
+        this.pid = Long.valueOf(this.txtPIDPopap.getText());
+        this.prioridad = Short.valueOf(this.txtPrioridadPopap.getText());
         if (this.proceso != null && this.proceso.getPID() == this.pid &&
                 this.proceso.getPrioridad() != this.prioridad) {
             this.planificador.setPrioridadProceso(this.proceso, this.prioridad);
@@ -150,6 +160,8 @@ public class PopapProceso extends javax.swing.JFrame {
         if (this.proceso != null) {
             this.pid = this.proceso.getPID();
             this.prioridad = this.proceso.getPrioridad();
+            this.txtPIDPopap.setText(String.valueOf(this.pid));
+            this.txtPrioridadPopap.setText(String.valueOf(this.prioridad));
         } 
     }
     

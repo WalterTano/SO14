@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JTable;
 
+import grupo4.proyectoso.Proceso.Tipo;
+
 /**
  *
  * @author danac
@@ -21,19 +23,37 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
         this.panelProcesos.setVisible(false);
-        MouseAdapter mouseAdapter = new MouseAdapter() {
+
+        MouseAdapter mouseAdapter = new SimulacionMouseAdapter(this) {
             public void mousePressed(MouseEvent mouseEvent) {
                 JTable table =(JTable) mouseEvent.getSource();
                 Point point = mouseEvent.getPoint();
                 int row = table.rowAtPoint(point);
+                
                 if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    ProcesosTableModel modelo;
+                    if (table.getModel() instanceof ProcesadorTableModel) {
+                        modelo = (ProcesadorTableModel) table.getModel();
+                    } else {
+                        modelo = (ProcesosTableModel) table.getModel();
+                    }
                     
+                    Proceso proc = modelo.obtenerProcesoEn(row);
+                    Principal contexto = this.getContexto();
+                    if (contexto.getPopupProceso() == null) {
+                        contexto.setPopupProceso(new PopapProceso());
+                    }
+                    contexto.getPopupProceso().setPlanificador(contexto.getPlanificador());
+                    contexto.getPopupProceso().setProceso(proc);
+                    contexto.getPopupProceso().setVisible(true);
                 }
             }
         };
+
         this.tblListos.addMouseListener(mouseAdapter);
         this.tblEnEjecucion.addMouseListener(mouseAdapter);
         this.tblBloqueados.addMouseListener(mouseAdapter);
+        this.hiloRefrescador.start();
     }
 
     /**
@@ -73,26 +93,20 @@ public class Principal extends javax.swing.JFrame {
 
         tblEnEjecucion.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         spanelEnEjecucion.setViewportView(tblEnEjecucion);
 
         tblListos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         spanelListos.setViewportView(tblListos);
@@ -105,13 +119,10 @@ public class Principal extends javax.swing.JFrame {
 
         tblBloqueados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         spanelBloqueados.setViewportView(tblBloqueados);
@@ -177,8 +188,6 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(btnVolver)
                 .addContainerGap(34, Short.MAX_VALUE))
         );
-
-        btnVolver.getAccessibleContext().setAccessibleName("Volver");
 
         panelInicial.setName("Panel_inicial"); // NOI18N
 
@@ -287,22 +296,40 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
         double quantum = Double.valueOf(String.valueOf(this.spnQuantum.getValue()));
-        short cantProcesadores = Short.valueOf(String.valueOf(this.spnQuantum.getValue()));
+        short cantProcesadores = Short.valueOf(String.valueOf(this.spnCantProcesadores.getValue()));
         this.planificador = new Planificador(cantProcesadores, quantum);
         this.panelInicial.setVisible(false);
         this.panelProcesos.setVisible(true);
+        
+        this.modeloTablaBloqueados = new ProcesosBloqueadosTableModel(this.planificador.getProcesosBloqueadosPorPID());
+        this.tblBloqueados.setModel(this.modeloTablaBloqueados);
+        this.modeloTablaEnEjecucion = new ProcesadorTableModel(this.planificador.getProcesadores());
+        this.tblEnEjecucion.setModel(this.modeloTablaEnEjecucion);
+        this.modeloTablaListos = new ColaMultiNivelTableModel(this.planificador.getMultiNivelListos());
+        this.tblListos.setModel(this.modeloTablaListos);
+
+        //for (int i = 0; i < 300; i++) {
+        //    double tiempoEnCPU = 60000;
+        //    double periodoES = 200;
+        //    double esperaES = 5000;
+        //    short prioridad = 55;
+        //    Proceso.Tipo tipo = Proceso.Tipo.USUARIO;
+        //    this.planificador.insertarProceso(tiempoEnCPU, periodoES, esperaES, prioridad, tipo);
+        //}
     }//GEN-LAST:event_btnIniciarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         this.planificador = null;
         this.panelInicial.setVisible(true);
         this.panelProcesos.setVisible(false);
+
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnAgregarProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProcesoActionPerformed
-        if (this.popupAgregarProceso == null) {
-            this.popupAgregarProceso = new PopapAgregarProceso();
-        }
+        if (this.popupAgregarProceso != null && this.popupAgregarProceso.isVisible())
+            return;
+        
+        this.popupAgregarProceso = new PopapAgregarProceso(this.planificador);
         this.popupAgregarProceso.setVisible(true);
     }//GEN-LAST:event_btnAgregarProcesoActionPerformed
 
@@ -341,10 +368,28 @@ public class Principal extends javax.swing.JFrame {
         });
     }
     
+    private static final short TIEMPO_REFRESCO = 100;
+    
     private Planificador planificador;
     private PopapProceso popupProceso;
-    private Proceso procesoSeleccionado;
     private PopapAgregarProceso popupAgregarProceso;
+    private javax.swing.table.AbstractTableModel modeloTablaListos;
+    private javax.swing.table.AbstractTableModel modeloTablaBloqueados;
+    private javax.swing.table.AbstractTableModel modeloTablaEnEjecucion;
+    private Thread hiloRefrescador = new Thread(() -> {
+        while(true) {
+                try {
+                    Thread.sleep(TIEMPO_REFRESCO);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                this.tblBloqueados.repaint();
+                this.tblEnEjecucion.repaint();
+                this.tblListos.repaint();
+            }
+    });
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProceso;
     private javax.swing.JButton btnIniciar;
@@ -367,4 +412,28 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTable tblEnEjecucion;
     private javax.swing.JTable tblListos;
     // End of variables declaration//GEN-END:variables
+
+    public Planificador getPlanificador() {
+        return this.planificador;
+    }
+    
+    public PopapProceso getPopupProceso() {
+        return this.popupProceso;
+    }
+    
+    public void setPopupProceso(PopapProceso popup) {
+        this.popupProceso = popup;
+    }
+    
+    public class SimulacionMouseAdapter extends MouseAdapter {
+        private Principal contexto;
+        
+        public SimulacionMouseAdapter(Principal contexto) {
+            this.contexto = contexto;
+        }
+        
+        public Principal getContexto() {
+            return this.contexto;
+        }
+    }
 }

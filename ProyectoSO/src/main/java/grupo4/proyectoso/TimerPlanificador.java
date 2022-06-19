@@ -6,6 +6,7 @@ package grupo4.proyectoso;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,26 +30,28 @@ public class TimerPlanificador {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                LinkedHashMap<Long, Proceso>[] copiaMultiNivel = this.planificador.getMultiNivelListos().getColaMultiNivel().clone();
-                for (LinkedHashMap<Long, Proceso> nivel : copiaMultiNivel) {
-                    for (Proceso proceso : nivel.values()) {
-                        proceso.incrementarEdad();
-                        System.out.println("Timer Envejecimiento =================================================".toUpperCase()  + proceso.imprimir());
-                        if (proceso.getEdad() == EDAD_ENVEJECIMIENTO) {
-                            proceso.envejecer();
+                try {
+                    LinkedHashMap<Long, Proceso>[] copiaMultiNivel = this.planificador.getMultiNivelListos().getColaMultiNivel().clone();
+                    for (LinkedHashMap<Long, Proceso> nivel : copiaMultiNivel) {
+                        for (Proceso proceso : nivel.values()) {
+                            proceso.incrementarEdad();
+                            //System.out.println("Timer Envejecimiento =================================================".toUpperCase()  + proceso.imprimir());
+                            if (proceso.getEdad() == EDAD_ENVEJECIMIENTO) {
+                                proceso.envejecer();
+                            }
                         }
                     }
-                }
 
-                List<Proceso> copiaBloqueados = new ArrayList<Proceso>();
-                copiaBloqueados.addAll(this.planificador.getProcesosBloqueadosPorPID().values());
-                for (Proceso proceso : copiaBloqueados) {
-                    proceso.setEsperaESRestante(proceso.getEsperaESRestante() - TICK_PROCESO);
-                    System.out.println("Timer Bloqueados >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>".toUpperCase() + proceso.imprimir());
-                    if (proceso.getEsperaESRestante() <= 0) {
-                        proceso.desbloquear();
+                    List<Proceso> copiaBloqueados = new ArrayList<Proceso>();
+                    copiaBloqueados.addAll(this.planificador.getProcesosBloqueadosPorPID().values());
+                    for (Proceso proceso : copiaBloqueados) {
+                        proceso.setEsperaESRestante(proceso.getEsperaESRestante() - TICK_PROCESO);
+                        //System.out.println("Timer Bloqueados >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>".toUpperCase() + proceso.imprimir());
+                        if (proceso.getEsperaESRestante() <= 0) {
+                            proceso.desbloquear();
+                        }
                     }
-                }
+                } catch(Exception e) { }
             }
         });
     }

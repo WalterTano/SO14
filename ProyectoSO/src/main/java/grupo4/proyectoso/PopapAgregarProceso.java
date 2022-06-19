@@ -13,7 +13,8 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
     /**
      * Creates new form AgregarProceso
      */
-    public PopapAgregarProceso() {
+    public PopapAgregarProceso(Planificador planificador) {
+        this.planificador = planificador;
         initComponents();
     }
 
@@ -40,8 +41,10 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        spnPrioridad = new javax.swing.JSpinner();
+        lblPrioridad = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblTTotalEjecucion.setText("Tiempo total de ejecución:");
 
@@ -60,6 +63,11 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
         cboxTipoProceso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SO", "Usuario" }));
 
         btnAgregarProceso.setText("Agregar");
+        btnAgregarProceso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarProcesoActionPerformed(evt);
+            }
+        });
 
         lblAgregarProceso.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         lblAgregarProceso.setText("Agregar Proceso");
@@ -69,6 +77,10 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
         jLabel2.setText("ms");
 
         jLabel3.setText("ms");
+
+        spnPrioridad.setModel(new javax.swing.SpinnerNumberModel(1, 1, 99, 1));
+
+        lblPrioridad.setText("Prioridad:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -87,13 +99,16 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
                             .addComponent(lblTipo)
                             .addComponent(lblTEsperaES)
                             .addComponent(lblTRealizaES)
-                            .addComponent(lblTTotalEjecucion))
+                            .addComponent(lblTTotalEjecucion)
+                            .addComponent(lblPrioridad))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtTTotalEjecucion, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtTRealizaES, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtTEsperaES, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cboxTipoProceso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(spnPrioridad, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(cboxTipoProceso, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addGap(4, 4, 4)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
@@ -125,7 +140,11 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTipo)
                     .addComponent(cboxTipoProceso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(spnPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPrioridad))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addComponent(btnAgregarProceso)
                 .addGap(23, 23, 23))
         );
@@ -138,7 +157,9 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -148,42 +169,21 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTRealizaESActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PopapAgregarProceso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PopapAgregarProceso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PopapAgregarProceso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PopapAgregarProceso.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnAgregarProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProcesoActionPerformed
+        double tiempoEnCPU = Double.valueOf(txtTTotalEjecucion.getText());
+        double periodoES = Double.valueOf(txtTRealizaES.getText());
+        double esperaES = Double.valueOf(txtTEsperaES.getText());
+        short prioridad = Short.valueOf(String.valueOf(spnPrioridad.getValue()));
+        Proceso.Tipo tipo = Proceso.Tipo.USUARIO;
+        if (String.valueOf(cboxTipoProceso.getSelectedItem()).equals("SO")) {
+            tipo = Proceso.Tipo.SO;
         }
-        //</editor-fold>
-        //</editor-fold>
+        if (this.planificador.insertarProceso(tiempoEnCPU, periodoES, esperaES, prioridad, tipo)) {
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnAgregarProcesoActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PopapAgregarProceso().setVisible(true);
-            }
-        });
-    }
-
+    private Planificador planificador;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProceso;
     private javax.swing.JComboBox<String> cboxTipoProceso;
@@ -192,10 +192,12 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblAgregarProceso;
+    private javax.swing.JLabel lblPrioridad;
     private javax.swing.JLabel lblTEsperaES;
     private javax.swing.JLabel lblTRealizaES;
     private javax.swing.JLabel lblTTotalEjecucion;
     private javax.swing.JLabel lblTipo;
+    private javax.swing.JSpinner spnPrioridad;
     private javax.swing.JTextField txtTEsperaES;
     private javax.swing.JTextField txtTRealizaES;
     private javax.swing.JTextField txtTTotalEjecucion;
