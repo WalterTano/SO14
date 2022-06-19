@@ -52,12 +52,6 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
 
         lblTEsperaES.setText("Tiempo de espera por E/S:");
 
-        txtTRealizaES.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTRealizaESActionPerformed(evt);
-            }
-        });
-
         lblTipo.setText("Tipo:");
 
         cboxTipoProceso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SO", "Usuario" }));
@@ -164,10 +158,6 @@ public class PopapAgregarProceso extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtTRealizaESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTRealizaESActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTRealizaESActionPerformed
 
     private void btnAgregarProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProcesoActionPerformed
         double tiempoEnCPU = Double.valueOf(txtTTotalEjecucion.getText());

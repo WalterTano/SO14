@@ -147,6 +147,18 @@ public class PopapProceso extends javax.swing.JFrame {
                 this.proceso.getPrioridad() != this.prioridad) {
             this.planificador.setPrioridadProceso(this.proceso, this.prioridad);
         } else {
+            if (this.planificador.getProcesosBloqueadosPorPID().containsKey(this.pid)) {
+                this.planificador.getProcesosBloqueadosPorPID().get(this.pid).setPrioridad(this.prioridad);
+                return;
+            }
+
+            for (Procesador procesador : this.planificador.getProcesadores()) {
+                if (procesador.getProceso() != null && procesador.getProceso().getPID() == this.pid) {
+                    procesador.getProceso().setPrioridad(this.prioridad);
+                    return;
+                }
+            }
+
             Proceso proceso = this.planificador.getMultiNivelListos().obtener(this.pid);
             if (proceso != null && proceso.getPrioridad() != this.prioridad) {
                 this.planificador.setPrioridadProceso(proceso, this.prioridad);
