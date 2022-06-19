@@ -6,7 +6,7 @@ package grupo4.proyectoso;
 
 public class Proceso {
 
-    public static final int PRIORIDAD_MINIMA = 99;
+    public static final int PRIORIDAD_MINIMA = 98;
     public static final int PRIORIDAD_MAXIMA = 0;
     public static final int PRIORIDAD_SO = 15;
 
@@ -143,11 +143,6 @@ public class Proceso {
     
     public void incrementarEdad() {
         this.edad++;
-    }
-    
-    public void modificarPrioridad(short prioridad) {
-        this.setPrioridad(prioridad);
-        this.planificador.setPrioridadProceso(this, this.prioridad);
     }
 
     public void envejecer() {

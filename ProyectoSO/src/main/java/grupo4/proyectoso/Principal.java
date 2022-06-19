@@ -4,6 +4,11 @@
  */
 package grupo4.proyectoso;
 
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JTable;
+
 /**
  *
  * @author danac
@@ -16,6 +21,19 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
         this.panelProcesos.setVisible(false);
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
+                JTable table =(JTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+                if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    
+                }
+            }
+        };
+        this.tblListos.addMouseListener(mouseAdapter);
+        this.tblEnEjecucion.addMouseListener(mouseAdapter);
+        this.tblBloqueados.addMouseListener(mouseAdapter);
     }
 
     /**
@@ -282,10 +300,10 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnAgregarProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProcesoActionPerformed
-        if (this.popupProceso == null) {
-            this.popupProceso = new PopapProceso(this.procesoSeleccionado);
+        if (this.popupAgregarProceso == null) {
+            this.popupAgregarProceso = new PopapAgregarProceso();
         }
-        
+        this.popupAgregarProceso.setVisible(true);
     }//GEN-LAST:event_btnAgregarProcesoActionPerformed
 
     /**
@@ -326,6 +344,7 @@ public class Principal extends javax.swing.JFrame {
     private Planificador planificador;
     private PopapProceso popupProceso;
     private Proceso procesoSeleccionado;
+    private PopapAgregarProceso popupAgregarProceso;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProceso;
     private javax.swing.JButton btnIniciar;

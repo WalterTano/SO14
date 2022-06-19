@@ -122,12 +122,27 @@ public class PopapProceso extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBloquearProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloquearProcesoActionPerformed
-        this.proceso.bloquear();
+        if (this.proceso != null && this.proceso.getPID() == this.pid) {
+            this.proceso.bloquear();
+        } else {
+            Proceso proceso = this.planificador.getMultiNivelListos().obtener(this.pid);
+            if (proceso != null) {
+                proceso.bloquear();
+            }
+        }
     }//GEN-LAST:event_btnBloquearProcesoActionPerformed
 
     private void btnModificarPrioridadPopapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarPrioridadPopapActionPerformed
+        if (this.proceso != null && this.proceso.getPID() == this.pid &&
+                this.proceso.getPrioridad() != this.prioridad) {
+            this.planificador.setPrioridadProceso(this.proceso, this.prioridad);
+        } else {
+            Proceso proceso = this.planificador.getMultiNivelListos().obtener(this.pid);
+            if (proceso != null && proceso.getPrioridad() != this.prioridad) {
+                this.planificador.setPrioridadProceso(proceso, this.prioridad);
+            }
+        }
         
-        this.proceso.modificarPrioridad(this.getPrioridad());
     }//GEN-LAST:event_btnModificarPrioridadPopapActionPerformed
 
     public void setProceso(Proceso proceso) {
@@ -135,7 +150,7 @@ public class PopapProceso extends javax.swing.JFrame {
         if (this.proceso != null) {
             this.pid = this.proceso.getPID();
             this.prioridad = this.proceso.getPrioridad();
-        }
+        } 
     }
     
     public void setPlanificador(Planificador planificador) {
