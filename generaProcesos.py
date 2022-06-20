@@ -4,8 +4,8 @@ from random import randint
 procesos = ""
 for x in range(0, 500):
     procesos += str(randint(2000, 100000))
-    procesos += "," + str(randint(2000, 100000))
-    procesos += "," + str(randint(2000, 20000))
+    procesos += "," + str(randint(500, 5000))
+    procesos += "," + str(randint(2000, 10000))
     prioridad = randint(1, 99)
     tipo = "Usuario"
     procesos += "," + str(prioridad)
