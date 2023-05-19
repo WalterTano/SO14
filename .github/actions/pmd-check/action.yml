@@ -11,4 +11,4 @@ inputs:
 
 run:
   steps:
-    - run: pmd check -d ${{ inputs.source }} -R ${{ inputs.rulesets }}
+    - run: pmd check -d ${{ github.event.inputs.source }} -R ${{ github.event.inputs.rulesets }}
