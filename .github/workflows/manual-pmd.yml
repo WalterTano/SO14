@@ -1,0 +1,18 @@
+name: Manual PMD check
+
+run-name: ${{ github.actor }} is checking the repository's code using PMD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Validate-Code-With-PMD:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Run PMD check
+        uses: ./.github/actions/pmd-check
+        with:
+          source: "./ProyectoSO/src/"
+          rulesets: "./pmd/ruleset.xml"

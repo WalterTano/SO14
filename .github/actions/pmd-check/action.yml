@@ -1,0 +1,14 @@
+name: Run PMD check
+description: 'Performs a PMD check to verify that the code follows best practices.'
+
+inputs:
+  source:
+    decription: "Path to the source code being analysed."
+    required: true
+  rulesets:
+    decription: "Path to the rulesets being used, separated by comma."
+    required: true
+
+run:
+  steps:
+    - run: pmd check -d ${{ inputs.source }} -R ${{ inputs.rulesets }}
