@@ -8,6 +8,10 @@ inputs:
   rulesets:
     description: "Path to the rulesets being used, separated by comma."
     required: true
+  checkDelta:
+    description: "Flag indicating whether to check changed files only."
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
@@ -22,4 +26,8 @@ runs:
     - name: 'Run PMD'
       shell: bash
       run: |
-        pmd check -d ${{ inputs.source }} -R ${{ inputs.rulesets }} -f textcolor
+        if [[ "${{ inputs.checkDelta }}" == "true" ]]; then
+          pmd check --file-list ${{ inputs.source }} -R ${{ inputs.rulesets }} -f textcolor --no-cache 
+        else
+          pmd check -d ${{ inputs.source }} -R ${{ inputs.rulesets }} -f textcolor --no-cache 
+        fi
