@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
  * @author Walter
  */
 public class ColaMultiNivelTableModel extends ProcesosTableModel{
+    // This is also a test
     private static final short TIEMPO_REFRESCO = 500;
 
     private ColaMultiNivel colaProcesos;
