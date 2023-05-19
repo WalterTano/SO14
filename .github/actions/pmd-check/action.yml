@@ -3,12 +3,23 @@ description: 'Performs a PMD check to verify that the code follows best practice
 
 inputs:
   source:
-    decription: "Path to the source code being analysed."
+    description: "Path to the source code being analysed."
     required: true
   rulesets:
-    decription: "Path to the rulesets being used, separated by comma."
+    description: "Path to the rulesets being used, separated by comma."
     required: true
 
-run:
+runs:
+  using: "composite"
   steps:
-    - run: pmd check -d ${{ github.event.inputs.source }} -R ${{ github.event.inputs.rulesets }}
+    - name: 'Setup PMD'
+      shell: bash
+      run: |
+        wget -q https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.0.0-rc2/pmd-bin-7.0.0-rc2.zip
+        unzip -qq -d ~/pmd pmd-bin-7.0.0-rc2.zip > /dev/null
+        echo "$HOME/pmd/pmd-bin-7.0.0-rc2/bin" >> $GITHUB_PATH
+
+    - name: 'Run PMD'
+      shell: bash
+      run: |
+        pmd check -d ${{ inputs.source }} -R ${{ inputs.rulesets }} -f textcolor
