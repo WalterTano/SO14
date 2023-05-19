@@ -3,7 +3,6 @@ package grupo4.proyectoso;
 import java.util.LinkedHashMap;
 
 public class ColaMultiNivel<K, V> {
-    // This is a test.
 
     private LinkedHashMap<K, V>[] colaMultiNivel;
     private int ultimoNivel;

@@ -1,0 +1,31 @@
+name: Validate changes with PMD
+
+on:
+  pull_request:
+      types:
+        - opened
+        - synchronize
+      branches:
+        - '**'
+
+jobs:
+  Validate-Code-With-PMD:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Save changed files
+        run: |
+          git diff --name-only -r HEAD^1 HEAD ./ProyectoSO/src/ > modified_files.txt
+          echo Modified files are:
+          cat modified_files.txt
+
+      - name: Run PMD check
+        uses: ./.github/actions/pmd-check
+        with:
+          source: "modified_files.txt"
+          rulesets: "./pmd/ruleset.xml"
+          checkDelta: "true"
